@@ -2,6 +2,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import Message from "../models/message.model.js";
 
 const clients = new Set();
+const users = new Map();
 
 export const setupWebSocketServer = (server) => {
   const wss = new WebSocketServer({ server });
@@ -14,6 +15,7 @@ export const setupWebSocketServer = (server) => {
       try {
         // Parse incoming message
         const parsed = JSON.parse(data);
+
         if (parsed.type === "init") {
           ws.username = parsed.username;
 
@@ -31,7 +33,7 @@ export const setupWebSocketServer = (server) => {
           );
         }
 
-        // Handle incoming messages
+        // Chat message
         if (parsed.type === "message") {
           const newMsg = await Message.create({
             username: ws.username,
@@ -45,7 +47,7 @@ export const setupWebSocketServer = (server) => {
             timestamp: newMsg.timestamp,
           };
 
-          // Broadcast the message to all connected clients
+          // Broadcast to all connected clients
           for (let client of clients) {
             if (client.readyState === WebSocket.OPEN) {
               client.send(JSON.stringify(payload));
