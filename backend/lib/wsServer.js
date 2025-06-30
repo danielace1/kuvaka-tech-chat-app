@@ -6,11 +6,13 @@ const clients = new Set();
 export const setupWebSocketServer = (server) => {
   const wss = new WebSocketServer({ server });
 
+  // Handle new WebSocket connections
   wss.on("connection", (ws) => {
     clients.add(ws);
 
     ws.on("message", async (data) => {
       try {
+        // Parse incoming message
         const parsed = JSON.parse(data);
         if (parsed.type === "init") {
           ws.username = parsed.username;
@@ -29,6 +31,7 @@ export const setupWebSocketServer = (server) => {
           );
         }
 
+        // Handle incoming messages
         if (parsed.type === "message") {
           const newMsg = await Message.create({
             username: ws.username,
@@ -42,6 +45,7 @@ export const setupWebSocketServer = (server) => {
             timestamp: newMsg.timestamp,
           };
 
+          // Broadcast the message to all connected clients
           for (let client of clients) {
             if (client.readyState === WebSocket.OPEN) {
               client.send(JSON.stringify(payload));
@@ -53,6 +57,7 @@ export const setupWebSocketServer = (server) => {
       }
     });
 
+    // Handle WebSocket disconnection
     ws.on("close", () => {
       clients.delete(ws);
     });
