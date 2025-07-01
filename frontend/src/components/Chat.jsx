@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { formatTimestamp } from "../utils/formatDate";
 
-const WEB_SOCKET_URL = import.meta.env.VITE_WEB_SOCKET_URL;
-// const WEB_SOCKET_URL = import.meta.env.VITE_WEB_SOCKET_URL_PROD;
+// const WEB_SOCKET_URL = import.meta.env.VITE_WEB_SOCKET_URL;
+const WEB_SOCKET_URL = import.meta.env.VITE_WEB_SOCKET_URL_PROD;
 
 const Chat = () => {
   const { state } = useLocation();
