@@ -2,7 +2,6 @@ import { WebSocketServer, WebSocket } from "ws";
 import Message from "../models/message.model.js";
 
 const clients = new Set();
-const users = new Map();
 
 export const setupWebSocketServer = (server) => {
   const wss = new WebSocketServer({ server });
